@@ -1,12 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
-	"github.com/LoanMgtGo/middleware"
+	"github.com/LoanMgtGo/database"
 	"github.com/LoanMgtGo/routes"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 )
+
+var err error
 
 func main() {
 	port := os.Getenv("PORT")
@@ -15,10 +19,13 @@ func main() {
 	}
 
 	router := gin.New()
+	database.DB, err = gorm.Open("mysql", database.DB_url(database.InitDatabase()))
+	if err != nil {
+		fmt.Println("status", err)
+	}
 	router.Use(gin.Logger())
 	routes.UserRoutes(router)
-	router.Use(middleware.Authentication())
-
+	//router.Use(middleware.Authentication())
 	routes.AssetRoutes(router)
 	routes.AssetTypeRoutes(router)
 	routes.ChartsAccountsRoutes(router)
