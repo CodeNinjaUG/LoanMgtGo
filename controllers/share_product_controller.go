@@ -2,27 +2,27 @@ package controllers
 
 import "github.com/gin-gonic/gin"
 
-func GetJourneyEntries() gin.HandlerFunc {
+func GetShareProducts() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 	}
 }
-func GetJourneyEntry() gin.HandlerFunc {
+func GetShareProduct() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 	}
 }
-func CreateJourneyEntry() gin.HandlerFunc {
+func CreateShareProduct() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 	}
 }
-func UpdateJourneyEntry() gin.HandlerFunc {
+func UpdateShareProduct() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 	}
 }
-func DeleteJourneyEntry() gin.HandlerFunc {
+func DeleteShareProduct() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 	}

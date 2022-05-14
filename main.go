@@ -23,6 +23,7 @@ func main() {
 	if err != nil {
 		fmt.Println("status", err)
 	}
+	defer database.DB.Close()
 	router.Use(gin.Logger())
 	routes.UserRoutes(router)
 	//router.Use(middleware.Authentication())
