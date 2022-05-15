@@ -110,27 +110,27 @@ type LoanProduct struct {
 	Description                       string   `json:"description"`
 	Fund                              Fund     `json:"fund"`
 	Currency                          Currency `json:"currency"`
-	DecimalPlaces                     float64
-	DefaultPrincipal                  float64
-	MinimumPrincipal                  float64
-	MaximumPrincipal                  float64
-	DefaultLoanTerm                   float64
-	MinimumLoanTerm                   float64
-	MaximumLoanTerm                   float64
-	RepaymentFrequency                float64
+	DecimalPlaces                     float64  `json:"decimal"`
+	DefaultPrincipal                  float64  `json:"default_principal"`
+	MinimumPrincipal                  float64  `json:"minimum_princial"`
+	MaximumPrincipal                  float64  `json:"maximum_principal"`
+	DefaultLoanTerm                   float64  `json:"default_loan_term"`
+	MinimumLoanTerm                   float64  `json:"minimum_loan_term"`
+	MaximumLoanTerm                   float64  `json:"maximum_loan_term"`
+	RepaymentFrequency                float64  `json:"repayment_frequency"`
 	Type                              RepaymentType `json:"repayment_type"`
-	DefaultInterestRate               float64
-	MinimumInterestRate               float64
-	MaximumInterestRate               float64
+	DefaultInterestRate               float64  `json:"default_interest_rate"`
+	MinimumInterestRate               float64  `json:"minimum_interest_rate"`
+	MaximumInterestRate               float64  `json:"maximum_interest_rate"`
 	Per                               Per `json:"per"`
-	GraceOnPrincipalPayment           float64
-	GraceOnInterestPayment            float64
-	GraceOnInterestCharged            float64
+	GraceOnPrincipalPayment           float64  `json:"grace_on_principal_payment"`
+	GraceOnInterestPayment            float64  `json:"grace_on_interest_payment"`
+	GraceOnInterestCharged            float64  `json:"grace_on_interest_charged"`
 	InterestMethodology               InterestMethodology `json:"interest_methodology"`
 	AmortizationMethod                AmortizationMethod  `json:"amortization_method"`
-	LoanTransactionProcessingStrategy string
+	LoanTransactionProcessingStrategy string  `json:"loan_transaction_processing_strategy"`
 	LoanCharge                        []LoanCharge `gorm:"many2many:loanproduct_loancharges;"`
-	CreditChecks                      string
+	CreditChecks                      string  `json:"credit_checks"`
 	AccountingRule                    AccountingRule `json:"accounting_rule"`
 	AutoDisburse                      AutoDisburse  `json:"auto_disburse"`
 	Status                            Active `json:"product_status"`
