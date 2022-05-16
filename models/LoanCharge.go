@@ -64,3 +64,45 @@ type LoanCharge struct {
 	Override     string       `json:"overide_status"`
 	Active       Active       `json:"status"`
 }
+
+
+func CreateLoanCharge(db *gorm.DB, LoanCharge *LoanCharge) (err error) {
+	err = db.Create(LoanCharge).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//get loan products
+
+func GetLoanCharges(db *gorm.DB, LoanCharge *[]LoanCharge) (err error) {
+	err = db.Find(LoanCharge).Error
+	if err != nil {
+		return nil
+	}
+	return nil
+}
+
+//get loan product by ID
+func GetLoanCharge(db *gorm.DB, LoanCharge *LoanCharge, id string) (err error) {
+	err = db.Where("id = ?", id).First(LoanCharge).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//Update loan product
+// still pending research
+func UpdateLoanCharge(db *gorm.DB, LoanCharge *LoanCharge) (err error) {
+	//db.Where("id =?",id).Save(LoanProduct)
+	db.Save(LoanCharge)
+	return nil
+}
+
+//Delete loan Product
+func DeleteLoanCharge(db *gorm.DB, LoanCharge *LoanCharge, id string) (err error) {
+	db.Where("id =?", id).Delete(LoanCharge)
+	return nil
+}
