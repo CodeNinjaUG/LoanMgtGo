@@ -16,7 +16,6 @@ const (
 	LastInstallmentFee ChargeType = "Last Installment Fee"
 )
 
-
 type ChargeOption string
 
 const (
