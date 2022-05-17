@@ -3,7 +3,7 @@ package models
 import (
 	"html"
 	"strings"
-
+	"github.com/Helpers"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -15,22 +15,45 @@ type User struct {
 	Password string `gorm:"->;<-;notnull" json:"-"`
 }
 
-func CreateUser(db *gorm.DB, User *User) (err error) {
-	err = db.Create(User).Error
+func CreateUser(db *gorm.DB, u *User) (*User, error) {
+	var err error
+	err = db.Create(&u).Error
 	if err != nil {
-		return err
+		return &User{},err
 	}
-	return nil
+	return u, nil
 }
 
 func BeforeSave(db *gorm.DB, User *User) (err error) {
 	//turns password to hash
-	hashedpassword, err := bcrypt.GenerateFromPassword([]byte(User.Password),bcrypt.DefaultCost)
-	if err!=nil{
+	hashedpassword, err := bcrypt.GenerateFromPassword([]byte(User.Password), bcrypt.DefaultCost)
+	if err != nil {
 		return err
 	}
 	User.Password = string(hashedpassword)
 	//remove spaces in the password
 	User.Password = html.EscapeString(strings.TrimSpace(User.Password))
 	return nil
+}
+
+func VerifyPassword(password, hashedPassword string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+
+func LoginCheck(db *gorm.DB, username string, password string) (string, error) {
+	var err error
+	u := User{}
+	err = db.Model(User{}).Where("name=?", username).Take(&u).Error
+	if err != nil {
+		return "", err
+	}
+	err = VerifyPassword(password, u.Password)
+	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+		return "", err
+	}
+	token, err := Helpers.GenerateToken(u.ID)
+	if err != nil {
+		return "", err
+	}
+	return token, nil
 }

@@ -19,11 +19,25 @@ func NewUser() *UserRepo {
 	return &UserRepo{Db: db}
 }
 
-// type UserRepo struct {
+// type RegisterInput struct {
 // 	Username string `json:"username" binding:"required"`
 // 	Email    string `json:"email" binding:"required"`
 // 	Password string `json:"password" binding:"required"`
 // }
+
+type LoginInput struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+type RegisterInput struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+	Email    string `json:"email" binding:"required"`
+}
+
+
+
 
 func (repo *UserRepo) CreateUser(c *gin.Context) {
 	var user models.User
@@ -34,6 +48,37 @@ func (repo *UserRepo) CreateUser(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, user)
+}
+
+func (repo *UserRepo) Login(c *gin.Context) {
+	var user models.User
+	var input LoginInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	user.Name = input.Username
+	user.Password = input.Password
+	token, err := models.LoginCheck(repo.Db, user.Name, user.Password)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+	}
+	c.JSON(http.StatusOK, token)
+
+}
+
+func(repo *UserRepo)Register(c *gin.Context){
+	var registerinput RegisterInput
+	var user models.User
+	if err := c.ShouldBindJSON(&registerinput); err!=nil{
+		c.JSON(http.StatusBadRequest,gin.H{"error":err})
+		return
+	}
+	user.Email = registerinput.Email
+	user.Name =  registerinput.Username
+	user.Password = registerinput.Password
+
+	_, err = models.CreateUser(repo.Db,user.Email,user.Name,user.Password)
 }
 
 // func GetUsers() gin.HandlerFunc {
