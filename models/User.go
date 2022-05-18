@@ -3,13 +3,16 @@ package models
 import (
 	"html"
 	"strings"
-	"github.com/Helpers"
+
+	"errors"
+
+	"github.com/LoanMgtGo/helpers"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
 type User struct {
-	ID       uint64 `gorm:"primary_key:auto_increment" json:"id"`
+	ID       uint   `gorm:"primary_key:auto_increment" json:"id"`
 	Name     string `gorm:"type:varchar(255)" json:"name"`
 	Email    string `gorm:"uniqueIndex; type:varchar(255)" json:"email"`
 	Password string `gorm:"->;<-;notnull" json:"-"`
@@ -19,7 +22,7 @@ func CreateUser(db *gorm.DB, u *User) (*User, error) {
 	var err error
 	err = db.Create(&u).Error
 	if err != nil {
-		return &User{},err
+		return &User{}, err
 	}
 	return u, nil
 }
@@ -51,9 +54,28 @@ func LoginCheck(db *gorm.DB, username string, password string) (string, error) {
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		return "", err
 	}
-	token, err := Helpers.GenerateToken(u.ID)
+	//n, err := int(u.ID)
+	token, err := helpers.GenerateToken(u.ID)
 	if err != nil {
 		return "", err
 	}
 	return token, nil
+}
+func GetUserByID(uid uint) (User, error) {
+
+	var u User
+	var DB *gorm.DB
+
+	if err := DB.First(&u, uid).Error; err != nil {
+		return u, errors.New("User not found")
+	}
+
+	u.PrepareGive()
+
+	return u, nil
+
+}
+
+func (u *User) PrepareGive() {
+	u.Password = ""
 }

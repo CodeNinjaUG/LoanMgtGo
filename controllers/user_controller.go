@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/LoanMgtGo/database"
+	"github.com/LoanMgtGo/helpers"
 	"github.com/LoanMgtGo/models"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -36,19 +37,16 @@ type RegisterInput struct {
 	Email    string `json:"email" binding:"required"`
 }
 
-
-
-
-func (repo *UserRepo) CreateUser(c *gin.Context) {
-	var user models.User
-	c.BindJSON(&user)
-	err := models.CreateUser(repo.Db, &user)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
-	c.JSON(http.StatusOK, user)
-}
+// func (repo *UserRepo) CreateUser(c *gin.Context) {
+// 	var user models.User
+// 	c.BindJSON(&user)
+// 	err := models.CreateUser(repo.Db, &user)
+// 	if err != nil {
+// 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
+// 		return
+// 	}
+// 	c.JSON(http.StatusOK, user)
+// }
 
 func (repo *UserRepo) Login(c *gin.Context) {
 	var user models.User
@@ -67,18 +65,35 @@ func (repo *UserRepo) Login(c *gin.Context) {
 
 }
 
-func(repo *UserRepo)Register(c *gin.Context){
+func (repo *UserRepo) CurrentUser(c *gin.Context) {
+	user_id, err := helpers.ExtractTokenID(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	u, err := models.GetUserByID(user_id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "success", "data": u})
+}
+func (repo *UserRepo) Register(c *gin.Context) {
 	var registerinput RegisterInput
 	var user models.User
-	if err := c.ShouldBindJSON(&registerinput); err!=nil{
-		c.JSON(http.StatusBadRequest,gin.H{"error":err})
+	if err := c.ShouldBindJSON(&registerinput); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	user.Email = registerinput.Email
-	user.Name =  registerinput.Username
+	user.Name = registerinput.Username
 	user.Password = registerinput.Password
-
-	_, err = models.CreateUser(repo.Db,user.Email,user.Name,user.Password)
+	_, err := models.CreateUser(repo.Db, &user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "registration successfully done"})
 }
 
 // func GetUsers() gin.HandlerFunc {

@@ -22,16 +22,15 @@ func InitDB() *gorm.DB {
 
 func connectDB() *gorm.DB {
 	var err error
-	dsn := DB_USERNAME + ":" + DB_HOST + "@tcp" + "(" + DB_HOST + ":" + DB_PORT + ")/" + DB_NAME + "?" + "parseTime=true&loc=Local"
+	dsn := DB_USERNAME + ":" + DB_PASSWORD + "@tcp" + "(" + DB_HOST + ":" + DB_PORT + ")/" + DB_NAME + "?" + "parseTime=true&loc=Local"
+	//dsn := DB_USERNAME + ":" + DB_PASSWORD + DB_HOST + "@tcp" + "(" + DB_HOST + ":" + DB_PORT + ")/" + DB_NAME + "?" + "parseTime=true&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil{
-        fmt.Println("Error Connecting Database:",err)
+	if err != nil {
+		fmt.Println("Error Connecting Database:", err)
 		return nil
 	}
 	return db
 }
-
-
 
 // type DBConfig struct {
 // 	Host     string
