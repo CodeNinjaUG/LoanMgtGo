@@ -37,6 +37,7 @@ type RegisterInput struct {
 	Email    string `json:"email" binding:"required"`
 }
 
+
 // func (repo *UserRepo) CreateUser(c *gin.Context) {
 // 	var user models.User
 // 	c.BindJSON(&user)
