@@ -3,12 +3,13 @@ package helpers
 import (
 	"fmt"
 	"os"
+
 	"strconv"
 	"strings"
 	"time"
 
-	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 )
 
 func GenerateToken(user_id uint) (string, error) {
@@ -16,12 +17,11 @@ func GenerateToken(user_id uint) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
 	claims["user_id"] = user_id
 	claims["exp"] = time.Now().Add(time.Hour * time.Duration(token_lifespan)).Unix()
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(os.Getenv("API_SECRET")))
 
 }

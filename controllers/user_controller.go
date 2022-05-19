@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/LoanMgtGo/database"
@@ -37,7 +38,6 @@ type RegisterInput struct {
 	Email    string `json:"email" binding:"required"`
 }
 
-
 // func (repo *UserRepo) CreateUser(c *gin.Context) {
 // 	var user models.User
 // 	c.BindJSON(&user)
@@ -54,6 +54,7 @@ func (repo *UserRepo) Login(c *gin.Context) {
 	var input LoginInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		log.Println("line", err)
 		return
 	}
 	user.Name = input.Username
@@ -61,6 +62,8 @@ func (repo *UserRepo) Login(c *gin.Context) {
 	token, err := models.LoginCheck(repo.Db, user.Name, user.Password)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		log.Println("line", err)
+		return
 	}
 	c.JSON(http.StatusOK, token)
 

@@ -22,8 +22,8 @@ func setUpRouter() *gin.Engine {
 
 	user_repo := controllers.NewUser()
 	// public := r.Group("/api")
-	r.GET("/user/register", user_repo.Register)
-	r.GET("/user/login", user_repo.Login)
+	r.POST("/user/register", user_repo.Register)
+	r.POST("/user/login", user_repo.Login)
 	protected := r.Group("/api/admin")
 	protected.Use(middleware.JwtAuthMiddleware())
 	protected.GET("/user", user_repo.CurrentUser)
