@@ -61,19 +61,13 @@ func LoginCheck(db *gorm.DB, username string, password string) (string, error) {
 	}
 	return token, nil
 }
-func GetUserByID(uid uint) (User, error) {
-
+func GetUserByID(uid uint,db *gorm.DB) (User, error) {
 	var u User
-	var DB *gorm.DB
-
-	if err := DB.First(&u, uid).Error; err != nil {
+	if err := db.First(&u, uid).Error; err != nil {
 		return u, errors.New("User not found")
 	}
-
 	u.PrepareGive()
-
 	return u, nil
-
 }
 
 func (u *User) PrepareGive() {

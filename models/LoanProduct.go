@@ -101,7 +101,7 @@ func CreateLoanProduct(db *gorm.DB, LoanProduct *LoanProduct) (err error) {
 func GetLoanProducts(db *gorm.DB, LoanProduct *[]LoanProduct) (err error) {
 	err = db.Find(LoanProduct).Error
 	if err != nil {
-		return nil
+		return err
 	}
 	return nil
 }

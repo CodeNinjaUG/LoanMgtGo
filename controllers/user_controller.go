@@ -75,7 +75,7 @@ func (repo *UserRepo) CurrentUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	u, err := models.GetUserByID(user_id)
+	u, err := models.GetUserByID(user_id,repo.Db)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
