@@ -7,6 +7,8 @@ import (
 	"github.com/LoanMgtGo/database"
 	"github.com/LoanMgtGo/models"
 	"github.com/gin-gonic/gin"
+
+	// "github.com/harranali/dump"
 	"gorm.io/gorm"
 )
 
@@ -23,7 +25,12 @@ func NewClient() *ClientRepo {
 //creating a client method
 func (repo *ClientRepo) CreateClient(c *gin.Context) {
 	var client models.Client
-	c.BindJSON(&client)
+	//dump.DD(c.BindJSON(&client))
+	ir := c.BindJSON(&client)
+	if ir != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": ir})
+		return
+	}
 	err := models.CreateClient(repo.Db, &client)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -58,34 +65,35 @@ func (repo *ClientRepo) GetClient(c *gin.Context) {
 //update a client
 func (repo *ClientRepo) UpdateClient(c *gin.Context) {
 	var client models.Client
-	id,_ := c.Params.Get("id")
+	id, _ := c.Params.Get("id")
 	err := models.GetClient(repo.Db, &client, id)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-           c.AbortWithStatus(http.StatusNotFound)
-		   return
+			c.AbortWithStatus(http.StatusNotFound)
+			return
 		}
-		c.AbortWithStatusJSON(http.StatusInternalServerError,gin.H{"error": err})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 	c.BindJSON(&client)
-	err = models.UpdateClient(repo.Db,&client)
-	if err !=nil{
-		c.JSON(http.StatusOK,client)
+	err = models.UpdateClient(repo.Db, &client)
+	if err != nil {
+		c.JSON(http.StatusOK, client)
 	}
 }
 
 //delete client
-func (repo *ClientRepo) DeleteClient(c *gin.Context){
+func (repo *ClientRepo) DeleteClient(c *gin.Context) {
 	var client models.Client
-	id,_ := c.Params.Get("id")
-	err := models.DeleteClient(repo.Db,&client,id)
-	if err!=nil{
+	id, _ := c.Params.Get("id")
+	err := models.DeleteClient(repo.Db, &client, id)
+	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "LoanProduct  Deleted Successfully"})
 }
+
 // func GetClients() gin.HandlerFunc{
 // 	return func(ctx *gin.Context) {
 
