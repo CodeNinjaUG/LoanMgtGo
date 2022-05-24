@@ -1,5 +1,7 @@
 package models
 
+import "gorm.io/gorm"
+
 type Category string
 
 const (
@@ -73,5 +75,43 @@ type SavingsProduct struct {
 	AllowOverDraft AllowOverDraft                       `json:"allow_over_draft"  binding:"required"`
 	AccountingRule   AccountingRule                     `json:"accounting_rule" binding:"required"`
 	Active Active                                       `json:"ative" binding:"required"`
-	    
+}
+
+
+
+//create a saving product
+func CreateSavingProduct(db *gorm.DB, SavingsProduct *SavingsProduct)(err error){
+	err = db.Create(SavingsProduct).Error
+	if err!=nil{
+		return err
+	}
+	return nil
+}
+
+//getting saving products
+func GetSavingProducts(db *gorm.DB, SavingsProduct *[]SavingsProduct)(err error){
+	err = db.Find(SavingsProduct).Error
+	if err!=nil{
+		return err
+	}
+	return nil
+}
+
+//getting saving product
+func GetSavingProduct(db *gorm.DB, SavingsProduct *SavingsProduct, id string)(err error){
+    err = db.Where("id = ?",id).First(SavingsProduct).Error
+	if err!=nil{
+		return err
+	}
+	return nil
+}
+//updating a saving product 
+func UpdateSavingProduct(db *gorm.DB, SavingsProduct *SavingsProduct, id string)(err error){
+      db.Save(SavingsProduct)
+	  return nil
+}
+//delete saving product 
+func DeleteSavingProduct(db *gorm.DB, SavingsProduct *SavingsProduct, id string)(err error){
+	db.Where("id=?",id).Delete(SavingsProduct)
+	return nil
 }
