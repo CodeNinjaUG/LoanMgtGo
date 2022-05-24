@@ -72,11 +72,13 @@ func GetAccount(db *gorm.DB, ChartAccount *ChartAccount, id string)(err error){
 	return nil
 }
 
+///update account
 func UpdateAccount(db *gorm.DB, ChartAccount *ChartAccount)(err error){
 	db.Save(ChartAccount)
 	return nil
 }
 
+///delete account
 func DeleteAccount(db *gorm.DB, ChartAccount *ChartAccount, id string)(err error){
 	db.Where("id=?",id).Delete(ChartAccount)
 	return nil
