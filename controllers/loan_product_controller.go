@@ -75,8 +75,10 @@ func (repo *LoanProductRepo) UpdateLoanProduct(c *gin.Context) {
 	c.BindJSON(&loan_product)
 	err = models.UpdateLoanProduct(repo.Db, &loan_product)
 	if err != nil {
-		c.JSON(http.StatusOK, loan_product)
+		c.AbortWithStatusJSON(http.StatusInternalServerError,gin.H{"error":err})
+		return 
 	}
+	c.JSON(http.StatusOK, loan_product)
 }
 
 //delete a loan product

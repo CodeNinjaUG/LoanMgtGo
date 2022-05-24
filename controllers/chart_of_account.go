@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/LoanMgtGo/database"
@@ -31,7 +32,57 @@ func (repo *ChartAccountRepo) CreateChartAccount(c *gin.Context){
 	c.JSON(http.StatusOK,chart_account)
 }
 
+//getting chartaccounts 
+func(repo *ChartAccountRepo) GetChartsOfAccounts(c *gin.Context){
+	var chart_accounts [] models.ChartAccount
+	err := models.GetAccounts(repo.Db,&chart_accounts)
+	if err!=nil{
+		c.AbortWithStatusJSON(http.StatusInternalServerError,gin.H{"error":err})
+		return 
+	}
+	c.JSON(http.StatusOK,chart_accounts)
+}
 
+//getting a chartaccount
+func(repo *ChartAccountRepo) GetChartAccount(c *gin.Context){
+	id,_ := c.Params.Get("id")
+	var chart_account models.ChartAccount
+	err := models.GetAccount(repo.Db,&chart_account, id)
+	if err!=nil{
+		c.AbortWithStatusJSON(http.StatusInternalServerError,gin.H{"error":err})
+		return
+	}
+	c.JSON(http.StatusOK,chart_account)
+}
+
+//updating a chartaccount
+func(repo *ChartAccountRepo) UpdateChartAccount(c *gin.Context){
+	id,_ := c.Params.Get("id")
+	var chart_account models.ChartAccount
+	err:= models.GetAccount(repo.Db, &chart_account, id)
+	if errors.Is(err, gorm.ErrRecordNotFound){
+		c.AbortWithStatus(http.StatusNotFound)
+		return 
+	}
+	c.BindJSON(&chart_account)
+	err = models.UpdateAccount(repo.Db,&chart_account)
+	if err!=nil{
+		c.AbortWithStatusJSON(http.StatusInternalServerError,gin.H{"error": err})
+		return 
+	}
+	c.JSON(http.StatusOK, chart_account)
+}
+//deleting a chart account 
+func (repo *ChartAccountRepo) DeleteChartAccount(c *gin.Context){
+	id,_ := c.Params.Get("id")
+	var chart_account models.ChartAccount
+	err:= models.DeleteAccount(repo.Db,&chart_account,id)
+	if err!=nil{
+		c.AbortWithStatusJSON(http.StatusInternalServerError,gin.H{"error":err})
+		return
+	}
+	c.JSON(http.StatusOK,chart_account)
+}
 
 // func GetChartsOfAccounts() gin.HandlerFunc{
 // 	return func(ctx *gin.Context){

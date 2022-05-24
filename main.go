@@ -48,5 +48,12 @@ func setUpRouter() *gin.Engine {
 	protected.PUT("/client/:id", client_repo.UpdateClient)
 	protected.DELETE("/client/:id", client_repo.DeleteClient)
 
+    chart_account_repo := controllers.NewChartAccount()
+	protected.GET("/chartaccounts", chart_account_repo.GetChartsOfAccounts)
+	protected.GET("/chartaccounts/:chart_account_id", chart_account_repo.GetChartAccount)
+	protected.POST("/chartaccount", chart_account_repo.CreateChartAccount)
+	protected.PATCH("/chartaccount/:chart_account_id", chart_account_repo.UpdateChartAccount)
+	protected.DELETE("/chartaccount/:chart_account_id", chart_account_repo.DeleteChartAccount)
+
 	return r
 }
